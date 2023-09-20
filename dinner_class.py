@@ -23,14 +23,13 @@ class DinnerLotto:
         }
 
         self.menu_dict = {**self.menu_dict_1, **self.menu_dict_2}
-        self.intro_menu = """랜덤한 저녁 메뉴 고르기(반찬, 국 중 하나만) : 1
-랜덤한 저녁 메뉴 고르기(반찬, 국 둘 다) : 2
+        self.intro_menu = """
 반찬 고르기 : 3
 국 고르기 : 4
-저녁 메뉴 전체 레시피 보기 : 5
+
 식단짜기 : 6
 종료하기 : 7\n"""
-        self.return_menu = "반찬 복불복으로 >> 1  반찬, 국 복불복으로 >> 2   반찬 / 국 고르기 >> 3 / 4    메뉴로 >> 5    식단짜기 >> 6   종료하기 >> 7"
+        self.return_menu = "반찬 고르기 >> 3    국 고르기 >> 4    식단짜기 >> 6   종료하기 >> 7"
         self.failed_menu = "팔지 않는 메뉴입니다. 다시 입력해 주세요!"
         self.error_message = "맞지 않은 번호입니다! 다시 입력해 주세요!"
 
@@ -253,20 +252,20 @@ class DinnerLotto:
     def print_error_message(self):
         print(self.error_message + "\n" + self.return_menu)
 
+    def random_menu_one(self):
+        random_number_1 = random.randint(1, 9)
+        print(f"{random_number_1}")
+
+    def random_menu_two(self):
+        random_number_1 = random.randint(1, 9)
+        random_number_2 = random.randint(1, 9)
+        print(f"( {random_number_1} / {random_number_2} )")
+
     def select_menu(self):
         while True:
             try:
                 dinner = int(input(""))
-                if dinner == 1:
-                    random_number_1 = random.randint(1, 9)
-                    print(f"{random_number_1}")
-                    self.print_return_menu()
-                elif dinner == 2:
-                    random_number_1 = random.randint(1, 9)
-                    random_number_2 = random.randint(1, 9)
-                    print(f"( {random_number_1} / {random_number_2} )")
-                    self.print_return_menu()
-                elif dinner == 3:
+                if dinner == 3:
                     self.print_side_dish()
                     food = int(input("원하시는 반찬의 번호를 선택해주세요\n"))
                     if food == 0:
@@ -283,16 +282,6 @@ class DinnerLotto:
                         self.print_intro_menu()
                     elif food in self.menu_dict_2:
                         self.menu_dict_2[food]()
-                        self.print_return_menu()
-                    else:
-                        self.print_failed_menu()
-                elif dinner == 5:
-                    self.print_menu()
-                    food = int(input("\n메뉴의 번호를 입력하세요!\n"))
-                    if food == 0:
-                        self.print_intro_menu()
-                    elif food in self.menu_dict:
-                        self.menu_dict[food]()
                         self.print_return_menu()
                     else:
                         self.print_failed_menu()
@@ -318,6 +307,7 @@ class DinnerLotto:
         while True:
             if len(result_a) == 7 and len(result_b) == 7:
                 break
+                # 현재 식단짜기는 menu_dict_1,2에서 7개를 뽑아오는 형식입니다. 추후 mysql을 이용해 db를 구축한 후, 칼로리 인덱스만을 뽑아올 예정입니다.
             selected_list = random.choice([self.menu_dict_1, self.menu_dict_2])
             food_number = random.choice(list(selected_list.keys()))
             if selected_list is self.menu_dict_1 and len(result_a) < 7 and total_sum + food_number <= 5000:
