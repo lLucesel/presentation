@@ -1,5 +1,4 @@
 import random
-from fastapi import FastAPI
 
 
 class DinnerLotto:
@@ -23,13 +22,14 @@ class DinnerLotto:
         }
 
         self.menu_dict = {**self.menu_dict_1, **self.menu_dict_2}
-        self.intro_menu = """
+        self.intro_menu = """랜덤한 저녁 메뉴 고르기(반찬, 국 중 하나만) : 1
+랜덤한 저녁 메뉴 고르기(반찬, 국 둘 다) : 2
 반찬 고르기 : 3
 국 고르기 : 4
-
+저녁 메뉴 전체 레시피 보기 : 5
 식단짜기 : 6
 종료하기 : 7\n"""
-        self.return_menu = "반찬 고르기 >> 3    국 고르기 >> 4    식단짜기 >> 6   종료하기 >> 7"
+        self.return_menu = "반찬 복불복으로 >> 1  반찬, 국 복불복으로 >> 2   반찬 / 국 고르기 >> 3 / 4    메뉴로 >> 5    식단짜기 >> 6   종료하기 >> 7"
         self.failed_menu = "팔지 않는 메뉴입니다. 다시 입력해 주세요!"
         self.error_message = "맞지 않은 번호입니다! 다시 입력해 주세요!"
 
@@ -261,61 +261,6 @@ class DinnerLotto:
         random_number_2 = random.randint(1, 9)
         print(f"( {random_number_1} / {random_number_2} )")
 
-    def select_menu(self):
-        while True:
-            try:
-                dinner = int(input(""))
-                if dinner == 3:
-                    self.print_side_dish()
-                    food = int(input("원하시는 반찬의 번호를 선택해주세요\n"))
-                    if food == 0:
-                        self.print_intro_menu()
-                    elif food in self.menu_dict_1:
-                        self.menu_dict_1[food]()
-                        self.print_return_menu()
-                    else:
-                        self.print_failed_menu()
-                else:
-                    if dinner == 4:
-                        self.print_soup()
-                        food = int(input("원하시는 국의 번호를 선택해주세요\n"))
-                        if food == 0:
-                            self.print_intro_menu()
-                        elif food in self.menu_dict_2:
-                            self.menu_dict_2[food]()
-                            self.print_return_menu()
-                        else:
-                            self.print_failed_menu()
-            except ValueError:
-                self.print_error_message()
 
-
-    # 식단짜기 기능 구현
-    def create_diet(self):
-        result_a = []
-        result_b = []
-        total_sum = 0
-        while True:
-            if len(result_a) == 7 and len(result_b) == 7:
-                break
-                # 현재 식단짜기는 menu_dict_1,2에서 7개를 뽑아오는 형식입니다. 추후 mysql을 이용해 db를 구축한 후, 칼로리 인덱스만을 뽑아올 예정입니다.
-            selected_list = random.choice([self.menu_dict_1, self.menu_dict_2])
-            food_number = random.choice(list(selected_list.keys()))
-            if selected_list is self.menu_dict_1 and len(result_a) < 7 and total_sum + food_number <= 5000:
-                result_a.append((food_number, selected_list[food_number].__name__))
-                total_sum += food_number
-            elif selected_list is self.menu_dict_2 and len(result_b) < 7 and total_sum + food_number <= 5000:
-                result_b.append((food_number, selected_list[food_number].__name__))
-                total_sum += food_number
-
-        print("랜덤하게 선택된 반찬 메뉴 및 칼로리:", result_a)
-        print("랜덤하게 선택된 국 메뉴 및 칼로리:", result_b)
-        print("반찬 칼로리의 총합:", sum(food[0] for food in result_a))
-        print("국 칼로리의 총합:", sum(food[0] for food in result_b))
-        print("총합:", total_sum)
-
-
-if __name__ == "__main__":
-    menu_selector = DinnerLotto()
-    menu_selector.print_intro_menu()
-    menu_selector.select_menu()
+lotto = DinnerLotto()
+lotto.random_menu_two()
